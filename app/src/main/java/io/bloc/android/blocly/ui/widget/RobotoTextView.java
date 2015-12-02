@@ -46,7 +46,7 @@ public class RobotoTextView extends TextView {
         TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(
                 attrs, R.styleable.Roboto, 0, 0);
         // #7
-        int robotoFontIndex = typedArray.getInteger(R.styleable.Roboto_robotoFont, -1);
+        int robotoFontIndex = typedArray.getInteger(R.styleable.Roboto_robotoStyle, -1);
         // #8
         typedArray.recycle();
         // #9

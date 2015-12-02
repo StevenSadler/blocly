@@ -9,24 +9,28 @@
     <style name="Headline">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">24sp</item>
-
         <item name="android:ellipsize">end</item>
 
-        <item name="robotoFont">Regular</item>
+        <item name="condensed">true</item>
+        <item name="robotoStyle">black|italic</item>
     </style>
 
     <style name="Caption">
         <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:lines">1</item>
         <item name="android:ellipsize">end</item>
-        <item name="robotoFont">Regular</item>
+
+        <item name="condensed">false</item>
+        <item name="robotoStyle">thin|italic</item>
     </style>
 
     <style name="Body1">
         <item name="android:textColor">@color/text_secondary</item>
-        <item name="android:textSize">14sp</item>
-        <item name="robotoFont">Regular</item>
+        <item name="android:textSize">12sp</item>
+
+        <item name="condensed">false</item>
+        <item name="robotoStyle">light</item>
     </style>
 
 </resources>
