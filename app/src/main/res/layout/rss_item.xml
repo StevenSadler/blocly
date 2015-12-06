@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@drawable/list_selector">
+    android:background="@drawable/rss_item_state_list_drawable">
 
     <FrameLayout
         android:id="@+id/fl_rss_item_image_header"

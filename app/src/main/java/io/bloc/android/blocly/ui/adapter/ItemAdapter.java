@@ -26,6 +26,7 @@ import io.bloc.android.blocly.api.model.RssItem;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterViewHolder> {
 
     private static String TAG = ItemAdapter.class.getSimpleName();
+    private static View selectedView;
 
     public ItemAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int index) {
         View inflate = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.rss_item, viewGroup, false);
@@ -112,6 +113,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         @Override
         public void onClick(View view) {
             Toast.makeText(view.getContext(), rssItem.getTitle(), Toast.LENGTH_SHORT).show();
+
+            if (selectedView != null) {
+                selectedView.setSelected(false);
+            }
+            view.setSelected(true);
+            selectedView = view;
         }
     }
 }
