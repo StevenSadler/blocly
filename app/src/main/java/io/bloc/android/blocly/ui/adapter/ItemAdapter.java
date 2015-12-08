@@ -54,6 +54,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         TextView title;
         TextView feed;
         TextView content;
+        View emptyHeaderWrapper;
         View headerWrapper;
         ImageView headerImage;
         CheckBox archiveCheckbox;
@@ -69,6 +70,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
             title = (TextView) itemView.findViewById(R.id.tv_rss_item_title);
             feed = (TextView) itemView.findViewById(R.id.tv_rss_item_feed_title);
             content = (TextView) itemView.findViewById(R.id.tv_rss_item_content);
+            emptyHeaderWrapper = itemView.findViewById(R.id.fl_empty_header);
             headerWrapper = itemView.findViewById(R.id.fl_rss_item_image_header);
             headerImage = (ImageView) headerWrapper.findViewById(R.id.iv_rss_item_image);
             archiveCheckbox = (CheckBox) itemView.findViewById(R.id.cb_rss_item_check_mark);
@@ -115,7 +117,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
             if (imageUri.equals(rssItem.getImageUrl())) {
                 headerImage.setImageBitmap(loadedImage);
-                headerImage.setVisibility(View.VISIBLE);
+                animateImage();
             }
         }
 
@@ -150,6 +152,28 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
         /*
          * Private Methods
          */
+
+        private void animateImage() {
+            int startingHeight = emptyHeaderWrapper.getMeasuredHeight();
+            int finalHeight = headerWrapper.getMeasuredHeight();
+
+            headerWrapper.setAlpha(0f);
+            headerWrapper.setVisibility(View.VISIBLE);
+            headerImage.setVisibility(View.VISIBLE);
+
+            startAnimator(startingHeight, finalHeight, new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float animatedFraction = valueAnimator.getAnimatedFraction();
+                    headerWrapper.setAlpha(animatedFraction);
+                    headerWrapper.getLayoutParams().height = animatedFraction == 1f ?
+                            ViewGroup.LayoutParams.WRAP_CONTENT :
+                            (Integer) valueAnimator.getAnimatedValue();
+
+                    headerWrapper.requestLayout();
+                }
+            });
+        }
 
         private void animateContent(final boolean expand) {
             if ((expand && contentExpanded) || (!expand && !contentExpanded)) {

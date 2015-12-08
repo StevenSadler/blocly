@@ -7,19 +7,21 @@
     android:background="@drawable/list_selector">
 
     <FrameLayout
+        android:id="@+id/fl_empty_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone">
+
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/fl_rss_item_image_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp">
-
-        <ProgressBar
-            android:id="@+id/pb_rss_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-
-            android:indeterminateOnly="true"
-            android:indeterminate="true"/>
+        android:layout_below="@+id/fl_empty_header"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_rss_item_image"
