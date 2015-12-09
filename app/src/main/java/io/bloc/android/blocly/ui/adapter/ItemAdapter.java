@@ -12,11 +12,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
+import java.lang.ref.WeakReference;
 
 import io.bloc.android.blocly.BloclyApplication;
 import io.bloc.android.blocly.R;
@@ -30,6 +31,16 @@ import io.bloc.android.blocly.api.model.RssItem;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterViewHolder> {
 
     private static String TAG = ItemAdapter.class.getSimpleName();
+
+    public static interface ItemAdapterDelegate {
+        public void didExpandItem(ItemAdapter adapter, RssItem rssItem);
+        public void didContractItem(ItemAdapter adapter, RssItem rssItem);
+        public void didClickSite(ItemAdapter adapter, RssItem rssItem);
+        public void didFavoriteItem(ItemAdapter adapter, RssItem rssItem);
+        public void didArchiveItem(ItemAdapter adapter, RssItem rssItem);
+    }
+
+    WeakReference<ItemAdapterDelegate> delegate;
 
     public ItemAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int index) {
         View inflate = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.rss_item, viewGroup, false);
@@ -45,6 +56,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
     @Override
     public int getItemCount() {
         return BloclyApplication.getSharedDataSource().getItems().size();
+    }
+
+    public ItemAdapterDelegate getDelegate() {
+        if (delegate == null) {
+            return null;
+        }
+        return delegate.get();
+    }
+
+    public void setDelegate(ItemAdapterDelegate delegate) {
+        this.delegate = new WeakReference<ItemAdapterDelegate>(delegate);
     }
 
     class ItemAdapterViewHolder extends RecyclerView.ViewHolder implements ImageLoadingListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
@@ -131,10 +153,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
         @Override
         public void onClick(View view) {
+            if (getDelegate() == null) {
+                return;
+            }
             if(view == itemView) {
+                if (contentExpanded) {
+                    getDelegate().didContractItem(ItemAdapter.this, rssItem);
+                } else {
+                    getDelegate().didExpandItem(ItemAdapter.this, rssItem);
+                }
                 animateContent(!contentExpanded);
             } else {
-                Toast.makeText(view.getContext(), "Visit " + rssItem.getUrl(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(view.getContext(), "Visit " + rssItem.getUrl(), Toast.LENGTH_SHORT).show();
+                getDelegate().didClickSite(ItemAdapter.this, rssItem);
             }
         }
 
@@ -144,7 +175,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemAdapterVie
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-            Log.v(TAG, "Checked changed to: " + isChecked);
+            if (getDelegate() == null) {
+                return;
+            }
+            if (favoriteCheckbox == compoundButton) {
+                getDelegate().didFavoriteItem(ItemAdapter.this, rssItem);
+            } else {
+                getDelegate().didArchiveItem(ItemAdapter.this, rssItem);
+            }
         }
 
         /*

@@ -9,18 +9,22 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import io.bloc.android.blocly.R;
 import io.bloc.android.blocly.api.model.RssFeed;
+import io.bloc.android.blocly.api.model.RssItem;
 import io.bloc.android.blocly.ui.adapter.ItemAdapter;
 import io.bloc.android.blocly.ui.adapter.NavigationDrawerAdapter;
 
 /**
  * Created by Steven on 11/24/2015.
  */
-public class BloclyActivity extends AppCompatActivity implements NavigationDrawerAdapter.NavigationDrawerAdapterDelegate {
+public class BloclyActivity extends AppCompatActivity implements ItemAdapter.ItemAdapterDelegate, NavigationDrawerAdapter.NavigationDrawerAdapterDelegate {
+
+    private static String TAG = BloclyActivity.class.getSimpleName();
 
     private ItemAdapter itemAdapter;
     private ActionBarDrawerToggle drawerToggle;
@@ -36,6 +40,7 @@ public class BloclyActivity extends AppCompatActivity implements NavigationDrawe
         setSupportActionBar(toolbar);
 
         itemAdapter = new ItemAdapter();
+        itemAdapter.setDelegate(this);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.rv_activity_blocly);
 
@@ -90,5 +95,34 @@ public class BloclyActivity extends AppCompatActivity implements NavigationDrawe
     public void didSelectFeed(NavigationDrawerAdapter adapter, RssFeed rssFeed) {
         drawerLayout.closeDrawers();
         Toast.makeText(this, "Show RSS items from " + rssFeed.getTitle(), Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+     * ItemAdapterDelegate
+     */
+    @Override
+    public void didExpandItem(ItemAdapter adapter, RssItem rssItem) {
+        Log.i(TAG, "User expanded item : " + rssItem.getTitle());
+    }
+
+    @Override
+    public void didContractItem(ItemAdapter adapter, RssItem rssItem) {
+        Log.i(TAG, "User contracted item : " + rssItem.getTitle());
+    }
+
+    @Override
+    public void didClickSite(ItemAdapter adapter, RssItem rssItem) {
+        Log.i(TAG, "User clicked site item : " + rssItem.getTitle());
+        Toast.makeText(this, "Visit " + rssItem.getUrl(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void didFavoriteItem(ItemAdapter adapter, RssItem rssItem) {
+        Log.i(TAG, "User favorited / unfavorited item : " + rssItem.getTitle());
+    }
+
+    @Override
+    public void didArchiveItem(ItemAdapter adapter, RssItem rssItem) {
+        Log.i(TAG, "User archived / unarchived item : " + rssItem.getTitle());
     }
 }
