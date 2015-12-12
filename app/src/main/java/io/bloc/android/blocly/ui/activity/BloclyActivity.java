@@ -2,6 +2,8 @@ package io.bloc.android.blocly.ui.activity;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -21,6 +23,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.bloc.android.blocly.BloclyApplication;
 import io.bloc.android.blocly.R;
@@ -148,6 +151,21 @@ public class BloclyActivity extends AppCompatActivity
         navigationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         navigationRecyclerView.setItemAnimator(new DefaultItemAnimator());
         navigationRecyclerView.setAdapter(navigationDrawerAdapter);
+
+        /*
+         * Use intents for assignment 49 to log activities that perform these tasks:
+         * open a webpage
+         * dial a phone number
+         * compose an email
+         */
+
+        logActivitiesWithIntentCategories(new String[] {Intent.CATEGORY_APP_BROWSER});
+        logActivitiesWithIntentCategories(new String[] {Intent.CATEGORY_APP_EMAIL});
+
+        logActivitiesWithIntentAction(Intent.ACTION_DIAL);
+        //logActivitiesWithIntentAction(Intent.ACTION_SEARCH);
+        //logActivitiesWithIntentAction(Intent.ACTION_WEB_SEARCH);
+
     }
 
     @Override
@@ -298,5 +316,34 @@ public class BloclyActivity extends AppCompatActivity
             }
         });
         valueAnimator.start();
+    }
+
+    private void logActivitiesWithIntentCategories(String[] categories) {
+
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        for (String category : categories) {
+            intent.addCategory(category);
+            Log.i(TAG, "logActivitiesWithIntentCategories: category: " + category);
+        }
+        logActivities(intent);
+    }
+
+    private void logActivitiesWithIntentAction(String action) {
+
+        Intent intent = new Intent(action);
+        Log.i(TAG, "logActivitiesWithIntentAction: action: " + action);
+        logActivities(intent);
+    }
+
+    private void logActivities(Intent intent) {
+        PackageManager packageManager = getApplicationContext().getPackageManager();
+        List<ResolveInfo> resolveInfoList = packageManager.queryIntentActivities(intent, 0);
+        int size = resolveInfoList.size();
+        Log.i(TAG, "logActivities: size: " + size);
+
+        for (ResolveInfo resolveInfo : resolveInfoList) {
+            String name = resolveInfo.activityInfo.name;
+            Log.i(TAG, "logActivities: name: " + name);
+        }
     }
 }
