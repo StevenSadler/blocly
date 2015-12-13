@@ -13,7 +13,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -268,7 +267,7 @@ public class BloclyActivity extends AppCompatActivity
         View viewToExpand = recyclerView.getLayoutManager().findViewByPosition(positionToExpand);
         recyclerView.smoothScrollBy(0, viewToExpand.getTop() - lessToScroll);
 
-        Log.i(TAG, "onItemClicked : positionToContract " + positionToContract + " : positionToExpand " + positionToExpand + " : lessToScroll " + lessToScroll);
+        //Log.i(TAG, "onItemClicked : positionToContract " + positionToContract + " : positionToExpand " + positionToExpand + " : lessToScroll " + lessToScroll);
     }
 
     @Override
