@@ -130,13 +130,6 @@ public class RssItemTable extends Table {
                 + COLUMN_ARCHIVED + " INTEGER DEFAULT 0)";
     }
 
-
-
-    public Cursor fetchRow(SQLiteDatabase readonlyDatabase, long rowId) {
-        return readonlyDatabase.query(true, getName(), null, COLUMN_ID + " = ?",
-                new String[] {String.valueOf(rowId)}, null, null, null, null);
-    }
-
     public Cursor fetchAllArchived(SQLiteDatabase readonlyDatabase) {
         return readonlyDatabase.query(true, getName(), null, "? = ?",
                 new String[] {COLUMN_ARCHIVED, String.valueOf(1)},
