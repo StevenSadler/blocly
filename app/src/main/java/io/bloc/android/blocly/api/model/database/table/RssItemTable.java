@@ -129,4 +129,49 @@ public class RssItemTable extends Table {
                 + COLUMN_FAVORITE + " INTEGER DEFAULT 0,"
                 + COLUMN_ARCHIVED + " INTEGER DEFAULT 0)";
     }
+
+
+
+    public Cursor fetchRow(SQLiteDatabase readonlyDatabase, long rowId) {
+        return readonlyDatabase.query(true, getName(), null, COLUMN_ID + " = ?",
+                new String[] {String.valueOf(rowId)}, null, null, null, null);
+    }
+
+    public Cursor fetchAllArchived(SQLiteDatabase readonlyDatabase) {
+        return readonlyDatabase.query(true, getName(), null, "? = ?",
+                new String[] {COLUMN_ARCHIVED, String.valueOf(1)},
+                null, null, null, null);
+    }
+
+    public Cursor fetchAllArchivedFromFeed(SQLiteDatabase readonlyDatabase, int feedId) {
+        return readonlyDatabase.query(true, getName(), null, "? = ? AND ? = ?",
+                new String[] {COLUMN_ARCHIVED, String.valueOf(1),
+                        COLUMN_RSS_FEED, String.valueOf(feedId)},
+                null, null, null, null);
+    }
+
+    public Cursor fetchAllFavorite(SQLiteDatabase readonlyDatabase) {
+        return readonlyDatabase.query(true, getName(), null, "? = ?",
+                new String[] {COLUMN_FAVORITE, String.valueOf(1)},
+                null, null, null, null);
+    }
+
+    public Cursor fetchAllFavoriteFromFeed(SQLiteDatabase readonlyDatabase, int feedId) {
+        return readonlyDatabase.query(true, getName(), null, "? = ? AND ? = ?",
+                new String[] {COLUMN_FAVORITE, String.valueOf(1),
+                        COLUMN_RSS_FEED, String.valueOf(feedId)},
+                null, null, null, null);
+    }
+
+    public Cursor fetchAllFromFeed(SQLiteDatabase readonlyDatabase, int feedId) {
+        return readonlyDatabase.query(true, getName(), null, "? = ?",
+                new String[] {COLUMN_RSS_FEED, String.valueOf(feedId)},
+                null, null, null, null);
+    }
+
+    public Cursor fetchAllFromFeedWithOffsetLimit(SQLiteDatabase readonlyDatabase, int feedId, int offset, int limit) {
+        return readonlyDatabase.query(true, getName(), null, "? = ?",
+                new String[] {COLUMN_RSS_FEED, String.valueOf(feedId)},
+                null, null, null, String.valueOf(offset) + "," + String.valueOf(limit));
+    }
 }
