@@ -48,7 +48,7 @@
         android:layout_below="@+id/tv_rss_item_title"/>
 
     <CheckBox
-        android:id="@+id/cb_rss_item_favoirite_star"
+        android:id="@+id/cb_rss_item_favorite_star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:button="@drawable/btn_star_checkbox"
