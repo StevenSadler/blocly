@@ -1,6 +1,9 @@
 package io.bloc.android.blocly.api.network;
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -77,6 +80,7 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
                     String itemPubDate = null;
                     String itemEnclosureURL = null;
                     String itemEnclosureMIMEType = null;
+                    String itemYoutubeImage = null;
 
                     Node itemNode = allItemNodes.item(itemIndex);
                     NodeList tagNodes = itemNode.getChildNodes();
@@ -92,6 +96,7 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
                             String descriptionText = tagNode.getTextContent();
                             itemImageURL = parseImageFromHTML(descriptionText);
                             itemDescription = parseTextFromHTML(descriptionText);
+                            itemYoutubeImage = parseYoutubeImageFromHTML(descriptionText);
                         } else if (XML_TAG_ENCLOSURE.equalsIgnoreCase(tag)) {
 
                             NamedNodeMap enclosureAttributes = tagNode.getAttributes();
@@ -116,6 +121,9 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
                     //Log.i(TAG, "performRequest: itemTitle           = " + itemTitle);
                     //Log.i(TAG, "performRequest:     itemDescription = "+ itemDescription);
 
+                    if (itemEnclosureURL == null) {
+                        itemEnclosureURL = itemYoutubeImage;
+                    }
                     if (itemEnclosureURL == null) {
                         itemEnclosureURL = itemImageURL;
                     }
@@ -170,6 +178,24 @@ public class GetFeedsNetworkRequest extends NetworkRequest<List<GetFeedsNetworkR
             return null;
         }
         return imgElements.attr("src");
+    }
+
+    static String parseYoutubeImageFromHTML(String htmlString) {
+        org.jsoup.nodes.Document document = Jsoup.parse(htmlString);
+        Elements divElements = document.select("div[data-src]");
+        if (divElements.isEmpty()) {
+            return null;
+        }
+        for (Element divElement : divElements) {
+            if (divElement.attr("data-src").contains("http://www.youtube.com/watch?v=")) {
+                String videoURL = divElement.attr("data-src");
+                String videoId = videoURL.substring(videoURL.indexOf("=") + 1);
+                String imageURL = "http://img.youtube.com/vi/" + videoId + "/hqdefault.jpg";
+                Log.i(TAG, "youtube image = " + imageURL);
+                return imageURL;
+            }
+        }
+        return null;
     }
 
     public static class FeedResponse {
