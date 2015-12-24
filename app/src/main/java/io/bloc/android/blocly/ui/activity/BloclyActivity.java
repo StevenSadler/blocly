@@ -149,7 +149,8 @@ public class BloclyActivity extends AppCompatActivity
 
                 getFragmentManager()
                         .beginTransaction()
-                        .add(R.id.fl_activity_blocly, RssItemListFragment.fragmentForRssFeed(rssFeeds.get(0)))
+                        .add(R.id.fl_activity_blocly, RssItemListFragment.fragmentForRssFeed(rssFeeds.get(0)), rssFeeds.get(0).getFeedUrl())
+                        .addToBackStack(rssFeeds.get(0).getFeedUrl())
                         .commit();
             }
 
@@ -214,6 +215,34 @@ public class BloclyActivity extends AppCompatActivity
     public void didSelectFeed(NavigationDrawerAdapter adapter, RssFeed rssFeed) {
         drawerLayout.closeDrawers();
         Toast.makeText(this, "Show RSS items from " + rssFeed.getTitle(), Toast.LENGTH_SHORT).show();
+
+        /*
+         * check if the feed clicked is associated with the current fragment or back fragment or neither
+         * if current, do nothing
+         * if back, swap the current and back
+         * if neither, move current to back and make a new current fragment in the front
+         */
+
+        RssItemListFragment currentFragment = (RssItemListFragment) getFragmentManager().findFragmentById(R.id.fl_activity_blocly);
+        RssFeed currentFragmentFeed = currentFragment.getRssFeed(null, 0);
+
+        if (rssFeed != currentFragmentFeed) {
+            RssItemListFragment selectedFragment = (RssItemListFragment) getFragmentManager().findFragmentByTag(rssFeed.getFeedUrl());
+            if (selectedFragment == null) {
+                getFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fl_activity_blocly, RssItemListFragment.fragmentForRssFeed(rssFeed), rssFeed.getFeedUrl())
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_activity_blocly, selectedFragment, rssFeed.getFeedUrl())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        }
+
     }
 
     /*
