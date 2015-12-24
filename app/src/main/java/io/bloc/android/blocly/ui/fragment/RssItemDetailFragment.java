@@ -88,7 +88,7 @@ public class RssItemDetailFragment extends Fragment implements ImageLoadingListe
                 .setDuration(getActivity().getResources().getInteger(android.R.integer.config_shortAnimTime))
                 .start();
         headerImage.animate()
-                .alpha(1f)
+                .alpha(0f)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setDuration(getActivity().getResources().getInteger(android.R.integer.config_shortAnimTime))
                 .start();
